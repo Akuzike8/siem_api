@@ -1,0 +1,36 @@
+
+syntax = "proto3";
+
+import "semantic.proto";
+
+// This is just enough protobuf to be able to talk with the Server's
+// API Query() endpoint.
+
+package proto;
+
+option go_package = "../connections";
+
+message ApiClientConfig {
+    string ca_certificate = 1 [(sem_type) = {
+            description: "The CA certificate used to verify API connections.",
+        }];
+
+    string client_cert = 2 [(sem_type) = {
+            description: "A client certificate that belongs to this client. "
+               "Generated from the 'velociraptor config api_client' command."
+        }];
+
+    string client_private_key = 3 [(sem_type) = {
+            description: "Private key to go with the client_cert.",
+        }];
+
+    string api_connection_string = 4 [(sem_type) = {
+            description: "Location where the api endpoint will be available.",
+        }];
+
+    string name = 5 [(sem_type) = {
+            description: "The CommonName for this API client.",
+        }];
+
+    string pinned_server_name = 6;
+}
