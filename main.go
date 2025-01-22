@@ -23,8 +23,11 @@ func main(){
 		MaxAge:           300,
 	}))
 
+	r.Get("/heartbeat",handles.Beats)
+
 	r.Route("/wazuh",func(r chi.Router){
 		r.Put("/host_restart",handles.WazuhHostRestart)
+		r.Post("/cis_posture",handles.WazuhCisPosture)
 	})
 	
 	r.Route("/velociraptor",func(r chi.Router){
