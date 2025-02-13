@@ -31,11 +31,12 @@ func VelociraptorQuarantine(w http.ResponseWriter, r *http.Request){
 	// Execute a VQL query
 	query := "SELECT * FROM info()"
 
-	connections.ExecuteVQLQuery(query)
+	results := connections.ExecuteVQLQuery(query)
 
 	// Return success response
     w.WriteHeader(http.StatusOK)
-    w.Write([]byte("Query executed successfully"))
+	w.Header().Add("Content-Type","Application/json")
+    w.Write([]byte(results))
 
 }
 

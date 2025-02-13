@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func ExecuteVQLQuery(query string) {
+func ExecuteVQLQuery(query string) string {
 	// Create a context with a timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -19,13 +19,13 @@ func ExecuteVQLQuery(query string) {
 	if err != nil {
 		// Handle timeout or other errors
 		if ctx.Err() == context.DeadlineExceeded {
-			fmt.Println("Python script timed out")
+			fmt.Println("script timed out")
 		} else {
-			fmt.Println("Error executing Python script:", err)
+			fmt.Println("Error executing script:", err)
 		}
-		return
+		return ""
 	}
 
 	// Print the output
-	fmt.Println("Output from Python script:", string(output))
+	return string(output)
 }
