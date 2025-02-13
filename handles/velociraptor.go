@@ -2,7 +2,6 @@ package handles
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"log"
@@ -51,10 +50,7 @@ func VelociraptorQuarantine(w http.ResponseWriter, r *http.Request){
 		log.Fatalf("Error executing VQL query: %v", err)
 	}
 
-	_ = connections.ProcessResponses(data)
-	fmt.Print(data)
-
-
+	connections.ProcessResponses(data)
 
 }
 
