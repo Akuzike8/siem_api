@@ -2,6 +2,7 @@ package handles
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"log"
@@ -22,7 +23,7 @@ func VelociraptorQuarantine(w http.ResponseWriter, r *http.Request){
 
 	// Read config file path from environment or command-line arguments
 	cfg := config.LoadConfig()
-	
+
 	configPath := cfg.VEL_CONFIG_PATH
 	if configPath == "" {
 		log.Fatal("Config path is not provided")
@@ -42,11 +43,15 @@ func VelociraptorQuarantine(w http.ResponseWriter, r *http.Request){
 	defer conn.Close()
 
 	// Execute a VQL query
+	var data connections.API_QueryClient
+	
 	query := "SELECT * FROM info()"
-	_, err = connections.ExecuteVQLQuery(conn, query)
+	data, err = connections.ExecuteVQLQuery(conn, query)
 	if err != nil {
 		log.Fatalf("Error executing VQL query: %v", err)
 	}
+
+	fmt.Print(data)
 
 
 
