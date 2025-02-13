@@ -1,11 +1,13 @@
 package handles
 
 import (
-	"net/http"
 	"encoding/json"
-	
+	"net/http"
+
 	"log"
 	"os"
+
+	"github.com/Akuzike8/siem_api/config"
 	"github.com/Akuzike8/siem_api/connections"
 	"github.com/Akuzike8/siem_api/dto"
 )
@@ -19,7 +21,9 @@ func VelociraptorQuarantine(w http.ResponseWriter, r *http.Request){
 	}
 
 	// Read config file path from environment or command-line arguments
-	configPath := os.Getenv("VEL_CONFIG_PATH")
+	cfg := config.LoadConfig()
+	
+	configPath := cfg.VEL_CONFIG_PATH
 	if configPath == "" {
 		log.Fatal("Config path is not provided")
 	}

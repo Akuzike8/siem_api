@@ -25,6 +25,7 @@ func LoadConfig() *Config {
 		WAZUH_API_IP:     getEnv("WAZUH_API_IP", "172.31.30.70"),
 		WAZUH_API_PORT:   getEnv("WAZUH_API_PORT", "55000"),
 		WAZUH_CONNECTION_STRING: getEnv("WAZUH_CONNECTION_STRING","https://172.31.30.70:55000"),
+		VEL_CONFIG_PATH: getEnv("VEL_CONFIG_PATH","api.config.yaml"),
 	}
 }
 
