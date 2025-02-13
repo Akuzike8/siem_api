@@ -44,13 +44,14 @@ func VelociraptorQuarantine(w http.ResponseWriter, r *http.Request){
 
 	// Execute a VQL query
 	var data connections.API_QueryClient
-	
+
 	query := "SELECT * FROM info()"
 	data, err = connections.ExecuteVQLQuery(conn, query)
 	if err != nil {
 		log.Fatalf("Error executing VQL query: %v", err)
 	}
 
+	_ = connections.ProcessResponses(data)
 	fmt.Print(data)
 
 
