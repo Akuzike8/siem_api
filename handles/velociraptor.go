@@ -2,6 +2,7 @@ package handles
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"log"
@@ -42,15 +43,23 @@ func VelociraptorQuarantine(w http.ResponseWriter, r *http.Request){
 	defer conn.Close()
 
 	// Execute a VQL query
-	var data connections.API_QueryClient
-
 	query := "SELECT * FROM info()"
-	data, err = connections.ExecuteVQLQuery(conn, query)
-	if err != nil {
-		log.Fatalf("Error executing VQL query: %v", err)
-	}
 
-	connections.ProcessResponses(data)
+	queryClient, err := connections.ExecuteVQLQuery(conn, query)
+	if err != nil {
+        http.Error(w, fmt.Sprintf("Error executing VQL query: %v", err), http.StatusInternalServerError)
+        return
+    }
+
+    // Process the responses
+    if err := connections.ProcessResponses(queryClient); err != nil {
+        http.Error(w, fmt.Sprintf("Error processing responses: %v", err), http.StatusInternalServerError)
+        return
+    }
+
+	// Return success response
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte("Query executed successfully"))
 
 }
 
