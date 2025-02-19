@@ -5,7 +5,7 @@ type WazuhHostRestartBody struct {
 	Token string
 }
 
-type WazuhCisPostureBody struct {
+type WazuhGetRequestBody struct {
 	Token string
 }
 
@@ -38,6 +38,24 @@ type WazuhScaAgentRes struct {
 	} `json:"data"`
 	Message string `json:"message"`
 	Error   int    `json:"error"`
+}
+
+type WazuhAgentSummaryRes struct {
+	Data struct {
+		Connection struct {
+			Active         int `json:"active"`
+			Disconnected   int `json:"disconnected"`
+			NeverConnected int `json:"never_connected"`
+			Pending        int `json:"pending"`
+			Total          int `json:"total"`
+		} `json:"connection"`
+
+		Configuration struct {
+			Synced    int `json:"synced"`
+			Total     int `json:"total"`
+			NotSynced int `json:"not_synced"`
+		} `json:"configuration"`
+	} `json:"data"`
 }
 
 type WazuhScaAgentRess struct {

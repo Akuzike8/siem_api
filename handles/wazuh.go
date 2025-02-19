@@ -12,6 +12,55 @@ import (
 	"github.com/Akuzike8/siem_api/dto"
 )
 
+func WazuhAgentSummary(w http.ResponseWriter, r *http.Request) {
+	var body dto.WazuhGetRequestBody
+
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		http.Error(w,"can't decode",http.StatusBadRequest)
+		return
+	}
+
+	token := fmt.Sprintf("Bearer %s",body.Token)
+	cfg := config.LoadConfig()
+
+	wazuh_connection_string := cfg.WAZUH_CONNECTION_STRING
+
+	//skipping tls verification
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	// Create the HTTP client
+	client := &http.Client{Transport: transport}
+	url := fmt.Sprintf("%s/agents/summary/status",wazuh_connection_string)
+
+	// Build the GET request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		fmt.Printf("Error creating request: %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
+
+	// Send the request
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Printf("Error making request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var summary dto.WazuhAgentSummaryRes
+
+	if err := json.NewDecoder(resp.Body).Decode(&summary); err != nil {
+		fmt.Printf("Failed to parse JSON: %v", err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(summary)
+}
+
 func WazuhHostRestart(w http.ResponseWriter, r *http.Request) {
 	var body dto.WazuhHostRestartBody
 
@@ -99,7 +148,7 @@ func WazuhHostRestart(w http.ResponseWriter, r *http.Request) {
 }
 
 func WazuhCisPosture(w http.ResponseWriter, r *http.Request){
-	var body dto.WazuhCisPostureBody
+	var body dto.WazuhGetRequestBody
 
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w,"can't decode",http.StatusBadRequest)
@@ -200,7 +249,6 @@ func WazuhCisPosture(w http.ResponseWriter, r *http.Request){
 
 	
 	}
-
 	
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
