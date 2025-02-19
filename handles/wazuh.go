@@ -194,7 +194,7 @@ func WazuhAgentList(w http.ResponseWriter, r *http.Request){
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
-	json.NewEncoder(w).Encode(agents)
+	json.NewEncoder(w).Encode(agents.Data.AffectedItems)
 }
 
 func WazuhCisPosture(w http.ResponseWriter, r *http.Request){
