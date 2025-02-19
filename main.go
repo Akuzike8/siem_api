@@ -29,6 +29,7 @@ func main(){
 		r.Put("/host_restart",handles.WazuhHostRestart)
 		r.Post("/cis_posture",handles.WazuhCisPosture)
 		r.Post("/agents_summary",handles.WazuhAgentSummary)
+		r.Post("/agents_list",handles.WazuhAgentList)
 	})
 	
 	r.Route("/velociraptor",func(r chi.Router){

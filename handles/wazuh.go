@@ -147,6 +147,56 @@ func WazuhHostRestart(w http.ResponseWriter, r *http.Request) {
 	
 }
 
+func WazuhAgentList(w http.ResponseWriter, r *http.Request){
+	var body dto.WazuhGetRequestBody
+
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		http.Error(w,"can't decode",http.StatusBadRequest)
+		return
+	}
+
+	token := fmt.Sprintf("Bearer %s",body.Token)
+	cfg := config.LoadConfig()
+
+	wazuh_connection_string := cfg.WAZUH_CONNECTION_STRING
+
+	//skipping tls verification
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	// Create the HTTP client
+	client := &http.Client{Transport: transport}
+
+	url := fmt.Sprintf("%s/agents",wazuh_connection_string)
+	
+	// Build the GET request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		fmt.Printf("Error creating request: %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
+
+	// Send the request
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Printf("Error making request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var agents dto.WazuhHostRestartAgentRes
+
+	if err := json.NewDecoder(resp.Body).Decode(&agents); err != nil {
+		fmt.Printf("Failed to parse JSON: %v", err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(agents)
+}
+
 func WazuhCisPosture(w http.ResponseWriter, r *http.Request){
 	var body dto.WazuhGetRequestBody
 
