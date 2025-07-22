@@ -168,7 +168,7 @@ func WazuhAgentList(w http.ResponseWriter, r *http.Request){
 	// Create the HTTP client
 	client := &http.Client{Transport: transport}
 
-	url := fmt.Sprintf("%s/agents",wazuh_connection_string)
+	url := fmt.Sprintf("%s/agents?limit=1000",wazuh_connection_string)
 	
 	// Build the GET request
 	req, err := http.NewRequest("GET", url, nil)
@@ -220,7 +220,7 @@ func WazuhCisPosture(w http.ResponseWriter, r *http.Request){
 	// Create the HTTP client
 	client := &http.Client{Transport: transport}
 	
-	url := fmt.Sprintf("%s/agents",wazuh_connection_string)
+	url := fmt.Sprintf("%s/agents?limit=1000",wazuh_connection_string)
 	
 	// Build the GET request
 	req, err := http.NewRequest("GET", url, nil)
