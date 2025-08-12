@@ -98,8 +98,9 @@ type WazuhSoftwarePackageRes struct {
 }
 
 type WazuhSoftwarePackageRess struct {
-	Hostname     string `json:"hostname"`
-	Vendor       string `json:"vendor"`
-	Name         string `json:"name"`
-	Version      string `json:"version"`
+	Hostname string `json:"hostname"`
+	Vendor   string `json:"vendor"`
+	Name     string `json:"name"`
+	Version  string `json:"version"`
+	Format   string `json:"format"`
 }

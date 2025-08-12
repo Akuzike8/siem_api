@@ -317,7 +317,7 @@ func WazuhSoftwarePackage(w http.ResponseWriter, r *http.Request){
 	}
 
 	token := fmt.Sprintf("Bearer %s",body.Token)
-	fields := "name,vendor,version"
+	fields := "name,vendor,version,format"
 
 	cfg := config.LoadConfig()
 
@@ -394,6 +394,7 @@ func WazuhSoftwarePackage(w http.ResponseWriter, r *http.Request){
 					Name: soft.Name,
 					Version: soft.Version,
 					Vendor: soft.Vendor,
+					Format: soft.Format,
 				}
 
 				packages = append(packages, pkg)
