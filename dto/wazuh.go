@@ -64,3 +64,42 @@ type WazuhScaAgentRess struct {
 	Name      string `json:"name"`
 	Score     int    `json:"score"`
 }
+
+type WazuhSoftwarePackageRes struct {
+	Data struct {
+		// AffectedItem represents a software package from a scan.
+		AffectedItems []struct {
+			Scan struct {
+				ID   int    `json:"id"`
+				Time string `json:"time"`
+			} `json:"scan"`
+			Source       string `json:"source"`
+			Size         int64  `json:"size"`
+			Multiarch    string `json:"multiarch"`
+			Section      string `json:"section"`
+			Vendor       string `json:"vendor"`
+			Name         string `json:"name"`
+			Architecture string `json:"architecture"`
+			Format       string `json:"format"`
+			Version      string `json:"version"`
+			InstallTime  string `json:"install_time"`
+			Description  string `json:"description"`
+			Priority     string `json:"priority"`
+			Location     string `json:"location"`
+			AgentID      string `json:"agent_id"`
+		} `json:"affected_items"`
+
+		TotalAffectedItems int           `json:"total_affected_items"`
+		TotalFailedItems   int           `json:"total_failed_items"`
+		FailedItems        []interface{} `json:"failed_items"`
+	} `json:"data"`
+	Message string `json:"message"`
+	Error   int    `json:"error"`
+}
+
+type WazuhSoftwarePackageRess struct {
+	Hostname     string `json:"hostname"`
+	Vendor       string `json:"vendor"`
+	Name         string `json:"name"`
+	Version      string `json:"version"`
+}
