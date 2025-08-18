@@ -104,3 +104,27 @@ type WazuhSoftwarePackageRess struct {
 	Version  string `json:"version"`
 	Format   string `json:"format"`
 }
+
+type WazuhWindowsUpdateRes struct {
+	Data struct {
+		// AffectedItem represents a software package from a scan.
+		AffectedItems []struct {
+			ScanId   int64  `json:"scan_id"`
+			Hotfix   string `json:"hotfix"`
+			ScanTime string `json:"scan_time"`
+			AgentID  string `json:"agent_id"`
+		} `json:"affected_items"`
+
+		TotalAffectedItems int           `json:"total_affected_items"`
+		TotalFailedItems   int           `json:"total_failed_items"`
+		FailedItems        []interface{} `json:"failed_items"`
+	} `json:"data"`
+	Message string `json:"message"`
+	Error   int    `json:"error"`
+}
+
+type WazuhWindowsUpdateRess struct {
+	Hostname string `json:"hostname"`
+	Hotfix   string `json:"hotfix"`
+	ScanTime string `json:"scan_time"`
+}

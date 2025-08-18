@@ -308,6 +308,102 @@ func WazuhCisPosture(w http.ResponseWriter, r *http.Request){
 	
 }
 
+func WazuhWindowsUpdate(w http.ResponseWriter, r *http.Request){
+	var body dto.WazuhGetRequestBody
+
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		http.Error(w,"can't decode",http.StatusBadRequest)
+		return
+	}
+
+	token := fmt.Sprintf("Bearer %s",body.Token)
+	cfg := config.LoadConfig()
+
+	wazuh_connection_string := cfg.WAZUH_CONNECTION_STRING
+
+	//skipping tls verification
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	// Create the HTTP client
+	client := &http.Client{Transport: transport}
+	
+	url := fmt.Sprintf("%s/agents?limit=10000",wazuh_connection_string)
+
+	// Build the GET request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		fmt.Printf("Error creating request: %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
+
+	// Send the request
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Printf("Error making request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var agents dto.WazuhHostRestartAgentRes
+
+	if err := json.NewDecoder(resp.Body).Decode(&agents); err != nil {
+		fmt.Printf("Failed to parse JSON: %v", err)
+	}
+
+	var osupdates []dto.WazuhWindowsUpdateRess
+
+	for _, agent := range agents.Data.AffectedItems {
+		url = fmt.Sprintf("%s/syscollector/%s/hotfixes",wazuh_connection_string,agent.Id)
+
+		// Build the GET request
+		req, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			fmt.Printf("Error creating request: %v", err)
+		}
+
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Authorization", token)
+
+		// Send the request
+		resp, err := client.Do(req)
+		if err != nil {
+			fmt.Printf("Error making request: %v", err)
+		}
+		defer resp.Body.Close()
+
+		var windowsupdates dto.WazuhWindowsUpdateRes
+
+		if err := json.NewDecoder(resp.Body).Decode(&windowsupdates); err != nil {
+			fmt.Printf("Failed to parse JSON: %v", err)
+		}
+
+		if  windowsupdates.Data.TotalAffectedItems >= 1 {
+
+			for _, soft := range windowsupdates.Data.AffectedItems {
+				if soft.Hotfix == "" {
+					continue
+				}
+
+				pkg := dto.WazuhWindowsUpdateRess{
+					Hostname: agent.Name,
+					Hotfix: soft.Hotfix,
+					ScanTime: soft.ScanTime,
+				}
+
+				osupdates = append(osupdates, pkg)
+			}
+
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(osupdates)
+}
+
 func WazuhSoftwarePackage(w http.ResponseWriter, r *http.Request){
 	var body dto.WazuhGetRequestBody
 

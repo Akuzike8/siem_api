@@ -29,6 +29,7 @@ func main(){
 		r.Put("/host_restart",handles.WazuhHostRestart)
 		r.Post("/cis_posture",handles.WazuhCisPosture)
 		r.Post("/software_packages",handles.WazuhSoftwarePackage)
+		r.Post("/windows_updates",handles.WazuhWindowsUpdate)
 		r.Post("/agents_summary",handles.WazuhAgentSummary)
 		r.Post("/agents_list",handles.WazuhAgentList)
 	})
