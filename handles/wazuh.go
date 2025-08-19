@@ -454,7 +454,7 @@ func WazuhSoftwarePackage(w http.ResponseWriter, r *http.Request){
 	var packages []dto.WazuhSoftwarePackageRess
 
 	for _, agent := range agents.Data.AffectedItems {
-		url = fmt.Sprintf("%s/syscollector/%s/packages?select=%s",wazuh_connection_string,agent.Id,fields)
+		url = fmt.Sprintf("%s/syscollector/%s/packages?limit=1000&select=%s",wazuh_connection_string,agent.Id,fields)
 
 		// Build the GET request
 		req, err := http.NewRequest("GET", url, nil)
