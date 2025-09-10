@@ -186,7 +186,7 @@ func WazuhAgentList(w http.ResponseWriter, r *http.Request){
 	}
 	defer resp.Body.Close()
 
-	var agents dto.WazuhHostRestartAgentRes
+	var agents dto.WazuhHostAgentRes
 
 	if err := json.NewDecoder(resp.Body).Decode(&agents); err != nil {
 		fmt.Printf("Failed to parse JSON: %v", err)

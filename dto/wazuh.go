@@ -24,6 +24,19 @@ type WazuhHostRestartAgentRess struct {
 	} `json:"data"`
 }
 
+type WazuhHostAgentRes struct {
+	Data struct {
+		AffectedItems []struct {
+			Id   string `json:"id"`
+			Name string `json:"name"`
+			Os	 struct{
+				Name string `json:"name"`
+				Platform string `json:"platform"`
+			} `json:"os"`
+		} `json:"affected_items"`
+	} `json:"data"`
+}
+
 type WazuhScaAgentRes struct {
 	Data struct {
 		AffectedItems []struct {
