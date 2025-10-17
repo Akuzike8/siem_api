@@ -30,6 +30,7 @@ type WazuhHostAgentRes struct {
 			Id   string `json:"id"`
 			Name string `json:"name"`
 			Os	 struct{
+				Build string `json:"build"`
 				Name string `json:"name"`
 				Platform string `json:"platform"`
 			} `json:"os"`
